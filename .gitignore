@@ -1,4 +1,7 @@
 /.project
 /target/*
 /.classpath
-/.settings/*
+/.settings/
+/target/
+/.checkstyle
+/tomcat.*/

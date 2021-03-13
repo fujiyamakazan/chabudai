@@ -1,14 +1,17 @@
 package net.nanisl.zabuton.chabudai;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.protocol.http.WebApplication;
 
-import net.nanisl.zabuton.app.ZabuApp;
+public class WicketApplication extends WebApplication {
 
-public final class ChabudaiApp extends ZabuApp {
+    public static void main(String[] args) {
+
+    }
 
     public Class<? extends Page> getHomePage() {
         //return IndexPage.class;
-
         return EnPage.class;
     }
+
 }

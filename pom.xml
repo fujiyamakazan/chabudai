@@ -39,7 +39,8 @@
 			</testResource>
 		</testResources>
 		<plugins>
-			<!-- javaと同じパッケージのhtmlなどもリソースに追加 -->
+			<!-- 【prepare-package】[unpack-dependencies] Systemスコープも含む依存関係のライブラリを展開してリソースに追加 -->
+			<!-- 【install】[copy-dependencies] libraryを出力(jdepの為) -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -51,7 +52,8 @@
 							<goal>unpack-dependencies</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/classes</outputDirectory>
+							<!-- 単体テストの時にclassesフォルダが汚染されていると不都合なので別のフォルダへ -->
+							<outputDirectory>${project.build.directory}/dependency-unpack</outputDirectory>
 						</configuration>
 					</execution>
 					<execution>
@@ -66,22 +68,29 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- systemスコープも含む依存関係のライブラリを展開してリソースに追加 -->
-			<!-- libraryを出力(jdepの為) -->
+			<!-- 【package】MANIFEST.MF作成 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
-					<finalName>${name}</finalName>
+					<!-- パッケージされるJarの名前 -->
+					<finalName>zabuton-chabudai</finalName>
+					<!-- Jar一体化 すでに [unpack-dependencies] で実施されているので不要
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
-					<appendAssemblyId>false</appendAssemblyId>
+					-->
+					<appendAssemblyId>false</appendAssemblyId><!-- assemblyIdを付与しない -->
 					<archive>
 						<manifest>
+							<!-- エントリポイントとなるクラス名 -->
 							<mainClass>${groupId}.${name}.Runner</mainClass>
 						</manifest>
 					</archive>
+                    <descriptors>
+                    	<!-- classes のほか dependency-unpack もパッケージする -->
+                        <descriptor>assemble.xml</descriptor>
+                    </descriptors>
 				</configuration>
 				<executions>
 					<execution>
@@ -93,7 +102,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- MANIFEST.MF作成 -->
+			<!-- Javaの実行 -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
