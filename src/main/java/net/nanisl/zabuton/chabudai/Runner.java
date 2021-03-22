@@ -12,8 +12,8 @@ public class Runner {
      */
     public static void main(String[] args) {
 
-        AbstractWebContainerStarter starter = new WicketBootByTomcat(ChabudaiApp.class);
-        WebContainerInvokeFrame.show("ちゃぶ台", starter);
+        AbstractWebContainerStarter starter = new WicketBootByTomcat(ChabuApp.class);
+        WebContainerInvokeFrame.show("CHABU-DAI", starter);
 
     }
 }

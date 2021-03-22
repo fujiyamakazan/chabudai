@@ -49,6 +49,7 @@
 	<style>
 		div.card {
 			border: 1px solid #cccccc;
+			cursor: pointer; /* マウスカーソル変更 */
 		}
 		dl {
 
@@ -72,9 +73,10 @@
 			<h1 wicket:id="bodyTitle"><a href="index">タスク管理 | CHABU-DAI<img src="image/room_washitsu.png"></a></h1>
 		</div>
 		<form wicket:id="form">
-			<dl>
-				<dt>アカウントID</dt>
-				<dd><input type="text" wicket:id="accountId" /></dd>
+			<div wicket:id="feedbak">フィードバック</div>
+			<dl wicket:id="accountCnt">
+				<dt><label for="accountId" wicket:id="accountIdLabel">アカウントID</label></dt>
+				<dd><span><input type="text" id="accountId" wicket:id="accountId" /></span></dd>
 			</dl>
 			<dl>
 				<dt>キーファイル</dt>

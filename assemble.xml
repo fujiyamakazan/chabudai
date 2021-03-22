@@ -6,11 +6,11 @@
     <includeBaseDirectory>false</includeBaseDirectory>
     <fileSets>
         <fileSet>
-            <directory>${basedir}/target/classes</directory>
+            <directory>${basedir}/target/dependency-unpack</directory>
             <outputDirectory>/</outputDirectory>
         </fileSet>
         <fileSet>
-			<directory>${basedir}/target/dependency-unpack</directory>
+            <directory>${basedir}/target/classes</directory>
             <outputDirectory>/</outputDirectory>
         </fileSet>
     </fileSets>

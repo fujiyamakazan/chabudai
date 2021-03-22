@@ -105,3 +105,11 @@ ul.inline li {
 }
 .filedrop ul li {
 }
+
+/* フィードバック */
+.feedbackPanelERROR {
+	color:red;
+}
+.hasError {
+	color:red;
+}
