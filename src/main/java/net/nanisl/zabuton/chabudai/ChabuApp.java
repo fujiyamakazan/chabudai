@@ -9,9 +9,9 @@ import net.nanisl.zabuton.app.ZabuApp;
 import net.nanisl.zabuton.chabudai.webapp.IndexPage;
 
 /**
- *
+ * CHABU-DAIのアプリケーションクラスです。
+ * WicketApplicationを継承しています。
  * @author fujiyama
- *
  */
 public final class ChabuApp extends ZabuApp {
 

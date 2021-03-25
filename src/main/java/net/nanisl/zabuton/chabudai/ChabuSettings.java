@@ -59,6 +59,9 @@ public class ChabuSettings implements Serializable {
 
     private KeyValuesFileObj keyValues = new SeparateKeyFileObj("data/ApplicationSettings.txt");
 
+    /**
+     * コンストラクタ。
+     */
     public ChabuSettings() {
         ChabuSettings me = this;
         me.googleAccountId = keyValues.get("googleAccountId");
@@ -67,6 +70,9 @@ public class ChabuSettings implements Serializable {
         me.tasksheetName = keyValues.get("tasksheetName");
     }
 
+    /**
+     * ファイルに保存します。
+     */
     public void save() {
         keyValues.set("googleAccountId", googleAccountId);
         keyValues.set("googleDriveKeyFileName", googleDriveKeyFileName);

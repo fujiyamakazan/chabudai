@@ -10,11 +10,13 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LambdaModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 
 import net.nanisl.zabuton.chabudai.ChabuSettings;
-import net.nanisl.zabuton.chabudai.webapp.panel.LabeledTextFieldPanel;
+import net.nanisl.zabuton.chabudai.webapp.component.GeneralLabel;
+import net.nanisl.zabuton.chabudai.webapp.component.GeneralTextField;
 import net.nanisl.zabuton.wicketcomponent.FileDropPanel;
 
 public class TaskPage extends AbstractChabudaiPage {
@@ -35,18 +37,17 @@ public class TaskPage extends AbstractChabudaiPage {
 
                 ChabuSettings settings = ChabuSettings.get();
 
-                String itemName = "アカウントＩＤ";
-//                IModel<String> model = LambdaModel.of(settings::getGoogleAccountId, settings::setGoogleAccountId);
-                add(new LabeledTextFieldPanel("accountId",itemName) {
+                IModel<String> modelAccountId = LambdaModel.of(
+                    settings::getGoogleAccountId,
+                    settings::setGoogleAccountId);
 
-                        @Override
-                        protected void addSettings(TextField<String> textField) {
-                            textField.setDefaultModel(LambdaModel.of(settings::getGoogleAccountId, settings::setGoogleAccountId));
-                            textField.setRequired(true);
-                            textField.add(EmailAddressValidator.getInstance());
-                        }
+                GeneralTextField textField = new GeneralTextField("accountId", modelAccountId, "アカウントID");
+                add(textField);
+                textField.setRequired(true); // 入力必須とする
+                textField.add(EmailAddressValidator.getInstance()); // メール形式とする
+                add(new GeneralLabel("labelAccountId", textField));
 
-                });
+
 
                 queue(new Label("keyFileMsg",
                     LambdaModel.of(settings::getGoogleDriveKeyFileName, settings::setGoogleDriveKeyFileName)));
