@@ -55,13 +55,11 @@ public class TaskPage extends AbstractChabudaiPage {
                 add(labelKeyFileName);
                 labelKeyFileName.setOutputMarkupId(true);
 
-
                 /*
                  * ファイルドロップ領域
                  */
-                FileDropPanel fileDropPanel = new FileDropPanel("fileDrop") {
+                FileDropPanel fileDropPanel = new FileDropPanel("fileDrop", true) {
                     private static final long serialVersionUID = 1L;
-
                     @Override
                     protected void afterFileUpload(AjaxRequestTarget target, List<FileUpload> files) {
                         labelKeyFileName.setDefaultModelObject("");
@@ -70,7 +68,6 @@ public class TaskPage extends AbstractChabudaiPage {
                         }
                         target.add(labelKeyFileName);
                     }
-
                 };
                 queue(fileDropPanel);
 
@@ -85,21 +82,20 @@ public class TaskPage extends AbstractChabudaiPage {
                     public void onSubmit() {
                         super.onSubmit();
 
-                        settings.save();
-
-                        for (FileUpload f : fileDropPanel.getFiles()) {
-                            String name = f.getClientFileName();
-                            log.debug(name);
-                            File dest = new File("data/" + name);
+                        /* ファイル処理 */
+                        FileUpload keyFile = fileDropPanel.getFileSingle();
+                        if (keyFile != null) {
+                            File dest = new File("data/" + keyFile.getClientFileName());
                             try {
-                                FileUtils.copyInputStreamToFile(f.getInputStream(), dest);
+                                FileUtils.copyInputStreamToFile(keyFile.getInputStream(), dest);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
+                            settings.setGoogleDriveKeyFileName(keyFile.getClientFileName());
                         }
-
+                        /* 設定保存 */
+                        settings.save();
                     }
-
                 });
                 queue(new TextField<String>("bookName",
                     LambdaModel.of(settings::getSpreadsheetName, settings::setSpreadsheetName)));
@@ -107,13 +103,17 @@ public class TaskPage extends AbstractChabudaiPage {
                     LambdaModel.of(settings::getTasksheetName, settings::setTasksheetName)));
 
                 queue(new Button("import") {
-
-                    /** serialVersionUID */
                     private static final long serialVersionUID = 1L;
 
                     @Override
                     public void onSubmit() {
                         super.onSubmit();
+                        
+                        SpreadSheet ss = new SpreadSheet(settings);
+                        
+                        
+                        
+                        
                     }
 
                 });
