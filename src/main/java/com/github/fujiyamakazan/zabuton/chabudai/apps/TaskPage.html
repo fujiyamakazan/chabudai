@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html xmlns:wicket="http://wicket.apache.org" lang="ja">
+<head>
+<wicket:container wicket:id="head">
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="js/base.js" type="text/javascript"></script>
+	<link rel="stylesheet"
+		href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="../common/css/base.css">
+	<title>XXX | CHABU-DAI</title>
+</wicket:container>
+<wicket:head>
+
+	<script type="text/javascript"
+		src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+
+	<link rel="stylesheet"
+		href="http://code.jquery.com/ui/1.12.1/themes/hot-sneaks/jquery-ui.css" />
+
+	<script type="text/javascript">
+		/* 順番判定 */
+		function checkIdOrders(ui) {
+			var orders = "";
+			$(".tasklist").find(".card").each(function(index, element) {
+				var id = $(this).attr("id");
+				orders += (id + ",");
+			});
+			$(".orders").val(orders);
+			if (ui) {
+				/* 変更直後の要素ID */
+				var dragged_id = ui.item[0].id;
+			}
+		}
+		/* 初期処理 */
+		$(function() {
+			/* 順番判定 */
+			checkIdOrders();
+
+			$(".tasklist").sortable({
+				axis : "y", // 移動は縦方向のみ
+				"opacity" : 0.5, // ドラッグ中の透明度
+				"update" : function(event, ui) { // ドラッグ後の処理
+					checkIdOrders(ui);
+				}
+			});
+		});
+	</script>
+	<style>
+		div.card {
+			border: 1px solid #cccccc;
+			cursor: pointer; /* マウスカーソル変更 */
+		}
+		dl {
+
+		}
+		dl dt{
+			vertical-align: top;
+			width:9em;
+			display: inline-block;
+
+		}
+		dl dd{
+			display: inline-block;
+		}
+	</style>
+</wicket:head>
+</head>
+<body>
+
+	<div class="general task">
+		<div class="head" wicket:id="bodyHead">
+			<h1><a href="index">タスク管理 | CHABU-DAI<img src="../common/image/room_washitsu.png"></a></h1>
+		</div>
+		<form wicket:id="form">
+			<div wicket:id="feedbak">フィードバック</div>
+			<div>
+				<dl>
+					<dt>
+						<label for="" wicket:id="labelAccountId">アカウントID</label>
+					</dt>
+					<dd>
+						<input type="text" wicket:id="accountId" />
+					</dd>
+				</dl>
+			</div>
+			<dl>
+				<dt>キーファイル</dt>
+				<dd>
+					<span wicket:id="keyFileMsg">未登録</span>
+					<div class="filedrop" wicket:id="fileDrop">ファイルドロップ</div>
+				</dd>
+			</dl>
+
+			<button type="submit" wicket:id="saveSettings"><i class="fa fa-save "></i> 設定保存</button>
+
+			<dl>
+				<dt>スプレッドシート名</dt>
+				<dd><input type="text" wicket:id="bookName" /></dd>
+			</dl>
+			<dl>
+				<dt>シート名</dt>
+				<dd>
+					<input type="text" wicket:id="sheetName" />
+					<select wicket:id="selectSheet"></select>
+				</dd>
+			</dl>
+			<button type="submit" wicket:id="import"><i class="fa fa-sign-in "></i> インポート</button>
+		</form>
+
+		<h2><wicket:message locale="タスク一覧">タスク一覧</wicket:message></h2>
+		<div class="tasklist">
+			<div id="0" class="card">
+				<span>状態</span><span>ああああああああああああああ<br />ああああああああああ</span>
+			</div>
+			<div id="1" class="card">
+				<span>状態</span><span>いいいいいああああああああああああああああああああああああ</span>
+			</div>
+			<div id="2" class="card">
+				<span>状態</span><span>うううううああああああああああああああああああああああああ</span>
+			</div>
+			<div id="3" class="card">
+				<span>状態</span><span>えええええああああああああああああああああああああああああ</span>
+			</div>
+		</div>
+		<input type="text" class="orders" />
+	</div>
+
+</body>
+</html>

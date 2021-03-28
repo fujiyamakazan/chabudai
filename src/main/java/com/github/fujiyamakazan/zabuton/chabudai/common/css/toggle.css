@@ -1,0 +1,39 @@
+@charset "utf-8";
+
+:root {
+	--color-on: #bd7878;
+	--color-off: #78bd78;
+}
+.toggle {
+	text-align: center;
+	position: relative;
+}
+.toggle input[type="checkbox"] {
+	display: none;
+}
+.toggle label {
+	display: block;
+	box-sizing: border-box;
+	border-radius: 10px;
+	border: 2px solid var(--color-off);
+}
+
+.toggle input[type="checkbox"]:checked+label {
+	border-color: var(--color-on);
+}
+
+.toggle #handle {
+	position: absolute;
+	width: 20%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	border-radius: 10px;
+	transition: .5s;
+	background: var(--color-off);
+}
+
+.toggle input[type="checkbox"]:checked+label #handle {
+	transform: translateX(400%);
+	background: var(--color-on);
+}
