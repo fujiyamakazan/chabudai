@@ -18,6 +18,19 @@ import org.slf4j.LoggerFactory;
 
 import com.github.fujiyamakazan.zabuton.chabudai.common.AbstractChabudaiPage;
 
+/**
+ * 拝啓 Validator 様 あなたのことはWicketと出会ったときから存じ上げておりました。
+ * 今まで、見て見ぬふりをしていて、本当に申し訳ありません。
+ * あなたはとても素晴らしいメカニズムです。
+ * 必須入力もメールアドレス形式もたったの一行。
+ *  * Pageクラスと同じ名前のプロパティファイルを書けば、
+ * エラーメッセージもカスタマイズできます。
+ * error メソッドをオーバーライドして、 IErrorMessageSource を実装すれば
+ * 動的なメッセージも出力でした。
+ *
+ * @author fujiyama
+ *
+ */
 public class Sample20210328Page extends AbstractChabudaiPage {
 
     @SuppressWarnings("unused")
@@ -27,6 +40,11 @@ public class Sample20210328Page extends AbstractChabudaiPage {
 
     private DummyDao accountService = new DummyDao();
     private DummyDao messageDao = new DummyDao();
+
+    @Override
+    protected String getTitle() {
+        return "テキストフィールド/バリデーションとメッセージ";
+    }
 
     @Override
     protected void onInitialize() {
@@ -51,9 +69,7 @@ public class Sample20210328Page extends AbstractChabudaiPage {
                 add(accountId);
                 accountId.setRequired(true); // 入力必須とする
                 accountId.add(EmailAddressValidator.getInstance()); // Eメール形式チェックする
-
                 add(new PasswordTextField("password", modelPassword));
-
             }
 
             @Override
@@ -69,7 +85,6 @@ public class Sample20210328Page extends AbstractChabudaiPage {
                     return;
                 }
             }
-
         });
 
         /*
@@ -96,10 +111,10 @@ public class Sample20210328Page extends AbstractChabudaiPage {
                             @Override
                             public String getMessage(String key, Map<String, Object> vars) {
                                 if (StringUtils.equals(key, "Required")) {
-                                    return messageDao.getErrorMessage("ERR", 001, "ja");
+                                    return messageDao.getMessage(DummyDao.MsgType.ERR, 001, "ja");
                                 }
                                 if (StringUtils.equals(key, "EmailAddressValidator")) {
-                                    return messageDao.getErrorMessage("ERR", 002, "ja");
+                                    return messageDao.getMessage(DummyDao.MsgType.ERR, 002, "ja");
                                 }
                                 return null;
                             }
@@ -120,7 +135,7 @@ public class Sample20210328Page extends AbstractChabudaiPage {
                             @Override
                             public String getMessage(String key, Map<String, Object> vars) {
                                 if (StringUtils.equals(key, "Required")) {
-                                    return messageDao.getErrorMessage("ERR", 004, "ja");
+                                    return messageDao.getMessage(DummyDao.MsgType.ERR, 004, "ja");
                                 }
                                 return null;
                             }
@@ -140,17 +155,13 @@ public class Sample20210328Page extends AbstractChabudaiPage {
 
                 /* アカウントチェック */
                 if (accountService.check(id, pw) == false) {
-                    error(messageDao.getErrorMessage("ERR", 003, "ja"));
+                    error(messageDao.getMessage(DummyDao.MsgType.ERR, 003, "ja"));
                     return;
                 }
             }
-
         });
     }
 
-    @Override
-    protected String getTitle() {
-        return "テキストフィールドとバリデーションとメッセージと...";
-    }
+
 
 }

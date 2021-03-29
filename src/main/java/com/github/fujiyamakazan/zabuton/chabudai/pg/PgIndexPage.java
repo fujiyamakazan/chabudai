@@ -14,6 +14,8 @@ public class PgIndexPage extends AbstractChabudaiPage {
         super.onInitialize();
 
         add(new BookmarkablePageLink<Void>("Sample20210328Page", Sample20210328Page.class));
+        add(new BookmarkablePageLink<Void>("Sample20210329Page", Sample20210329Page.class));
+        add(new BookmarkablePageLink<Void>("Sample20210330Page", Sample20210330Page.class));
     }
 
 

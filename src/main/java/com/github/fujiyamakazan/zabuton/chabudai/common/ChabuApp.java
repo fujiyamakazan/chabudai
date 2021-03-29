@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import com.github.fujiyamakazan.zabuton.app.ZabuApp;
 import com.github.fujiyamakazan.zabuton.chabudai.apps.TaskSettings;
-import com.github.fujiyamakazan.zabuton.chabudai.common.locale.LocaleMessageResolver;
 
 /**
  * CHABU-DAIのアプリケーションクラスです。
@@ -52,11 +51,6 @@ public final class ChabuApp extends ZabuApp {
         getJavaScriptLibrarySettings()
             .setJQueryReference(new UrlResourceReference(
                 Url.parse(urlJquery)));
-
-
-        /* カスタムwicketタグ「locale」を解決するリゾルバを追加 */
-        getPageSettings().getComponentResolvers().add(0, new LocaleMessageResolver());
-
 
     }
 
