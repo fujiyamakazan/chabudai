@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html xmlns:wicket="http://wicket.apache.org" lang="ja">
+<head>
+<script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<style>
+div {
+	border: 1px solid #ccc;
+	padding: 5px;
+}
+
+span.cmp {
+	border: 1px solid #ee0000;
+}
+</style>
+
+<script>
+	$(function() {
+
+		$("#report").click(function() {
+			alert($("#workspace").html());
+		});
+
+		var htmlComponent = "<span class='cmp' style='display:inline-block;'>〇<select class='newcomp'>"
+			+ "<option>--</option>"
+			+ "<option value=\"label\">メッセージ</option>"
+			+ "<option value=\"text\">テキストフィールド</option>"
+			+ "<option value=\"checkbox\">チェックボックス</option>"
+			+ "<option value=\"select\">セレクトボックス</option>"
+			+ "<option value=\"button\">ボタン</option>"
+			+ "<option value=\"list\">リスト</option>"
+			+ "<option value=\"keyval\">ラベルと値</option>"
+			+ "</select></span>";
+
+		var htmlRow = "<button class='add left'>←</button>" + htmlComponent
+				+ "<button class='add right'>→</button>";
+
+		var htmlPanel = "<div>"
+				+ "<div><button class='add top'>↑</button></div>" + "<div>"
+				+ htmlRow + "</div>"
+				+ "<div><button class='add bottom'>↓</button></div>" + "</div>";
+
+		$("#workspace").html(htmlPanel);
+
+		$("body").on('change', '.newcomp', function() {
+			var r = $(this).find('option:selected').val();
+
+			if (r == "label") {
+				$(this).after("<p>メッセージ<p>");
+			}
+			if (r == "text") {
+				$(this).after("<input type='text' value='テキストボックス' />");
+			}
+			if (r == "checkbox") {
+				$(this).after("<input type='checkbox' />チェックボックス");
+			}
+			if (r == "select") {
+				$(this).after("<select><option>選んでください</option></select>");
+			}
+			if (r == "button") {
+				$(this).after("<button>ボタン</button>");
+			}
+			if (r == "list") {
+				$(this).after("<ul><li>リスト</li><li>リスト</li><li>リスト</li></ul>");
+			}
+			if (r == "keyval") {
+				$(this).after("<dl><dt>タイトル</dt><dd>値</dt></dl>");
+			}
+			$(this).after("<span>[...]</span>");
+			$(this).remove();
+		});
+
+		function draggAndDrop() {
+			$(".cmp").draggable({containment : "#workspace"});
+
+			$("#workspace div").droppable({
+				accept : '.cmp',
+				drop : function(e, ui) {
+					ui.draggable.appendTo(this);
+					ui.draggable.attr('style', 'position: relative;');
+				}
+			});
+		}
+
+		$("body").on('click', '.add', function() {
+			if ($(this).is('.top')) {
+				$(this).parent().after("<div>" + htmlRow + "</div>");
+			}
+			if ($(this).is('.left')) {
+				$(this).after(htmlComponent);
+			}
+			if ($(this).is('.right')) {
+				$(this).before(htmlComponent);
+			}
+			if ($(this).is('.bottom')) {
+				$(this).parent().before("<div>" + htmlRow + "</div>");
+			}
+			draggAndDrop();
+		});
+
+		draggAndDrop();
+
+		//$("body").on('draggable', 'span');
+
+
+	});
+</script>
+</head>
+<body>
+	jQueryのHTMLデザイナー
+	<button id="report">report</button>
+	<div id="workspace">
+	</div>
+
+</body>
+</html>

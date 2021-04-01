@@ -3,6 +3,7 @@ package com.github.fujiyamakazan.zabuton.chabudai.pg;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
+import java.util.Iterator;
 import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
@@ -12,12 +13,15 @@ import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.IMarkupFragment;
 import org.apache.wicket.markup.Markup;
+import org.apache.wicket.markup.MarkupElement;
 import org.apache.wicket.markup.MarkupFactory;
 import org.apache.wicket.markup.MarkupResourceStream;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.WicketTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.AbstractMarkupSourcingStrategy;
+import org.apache.wicket.markup.html.panel.IMarkupSourcingStrategy;
 import org.apache.wicket.markup.resolver.IComponentResolver;
 import org.apache.wicket.markup.resolver.WicketMessageResolver;
 import org.apache.wicket.util.lang.Bytes;
@@ -95,11 +99,6 @@ public class Sample20210329Page extends AbstractChabudaiPage
 
 
 
-            @Override
-            public IMarkupFragment getMarkup() {
-                // TODO 自動生成されたメソッド・スタブ
-                return super.getMarkup();
-            }
 
             @Override
             protected void onInitialize() {
@@ -208,6 +207,125 @@ public class Sample20210329Page extends AbstractChabudaiPage
             @Override
             public IMarkupFragment getMarkup(Component child) {
                 return super.getMarkup(child);
+            }
+
+            @Override
+            protected IMarkupSourcingStrategy newMarkupSourcingStrategy() {
+                return new AbstractMarkupSourcingStrategy() {
+
+                    @Override
+                    public IMarkupFragment getMarkup(MarkupContainer container, Component child) {
+                        return new IMarkupFragment() {
+
+                            @Override
+                            public Iterator<MarkupElement> iterator() {
+                                // TODO 自動生成されたメソッド・スタブ
+                                return null;
+                            }
+
+                            @Override
+                            public MarkupElement get(int index) {
+                                // TODO 自動生成されたメソッド・スタブ
+                                return null;
+                            }
+
+                            @Override
+                            public MarkupResourceStream getMarkupResourceStream() {
+
+                                IResourceStream mrs = new IResourceStream() {
+
+                                    @Override
+                                    public Instant lastModifiedTime() {
+                                        // TODO 自動生成されたメソッド・スタブ
+                                        return null;
+                                    }
+
+                                    @Override
+                                    public void setVariation(String variation) {
+                                        // TODO 自動生成されたメソッド・スタブ
+
+                                    }
+
+                                    @Override
+                                    public void setStyle(String style) {
+                                        // TODO 自動生成されたメソッド・スタブ
+
+                                    }
+
+                                    @Override
+                                    public void setLocale(Locale locale) {
+                                        // TODO 自動生成されたメソッド・スタブ
+
+                                    }
+
+                                    @Override
+                                    public Bytes length() {
+                                        // TODO 自動生成されたメソッド・スタブ
+                                        return null;
+                                    }
+
+                                    @Override
+                                    public String getVariation() {
+                                        // TODO 自動生成されたメソッド・スタブ
+                                        return null;
+                                    }
+
+                                    @Override
+                                    public String getStyle() {
+                                        // TODO 自動生成されたメソッド・スタブ
+                                        return null;
+                                    }
+
+                                    @Override
+                                    public Locale getLocale() {
+                                        // TODO 自動生成されたメソッド・スタブ
+                                        return null;
+                                    }
+
+                                    @Override
+                                    public InputStream getInputStream() throws ResourceStreamNotFoundException {
+
+                                        return IOUtils.toInputStream("<span wicket:id=\"in\"></span>");
+                                    }
+
+                                    @Override
+                                    public String getContentType() {
+                                        // TODO 自動生成されたメソッド・スタブ
+                                        return null;
+                                    }
+
+                                    @Override
+                                    public void close() throws IOException {
+                                        // TODO 自動生成されたメソッド・スタブ
+
+                                    }
+                                };
+                                MarkupResourceStream markupResourceStream = new MarkupResourceStream(mrs);
+                                return markupResourceStream;
+                            }
+
+                            @Override
+                            public int size() {
+                                // TODO 自動生成されたメソッド・スタブ
+                                return 0;
+                            }
+
+                            @Override
+                            public IMarkupFragment find(String wicketId) {
+                                // TODO 自動生成されたメソッド・スタブ
+                                return null;
+                            }
+
+                            @Override
+                            public String toString(boolean markupOnly) {
+                                // TODO 自動生成されたメソッド・スタブ
+                                return null;
+                            }
+
+                        };
+                    }
+
+                };
             }
 
 
