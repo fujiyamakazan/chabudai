@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html xmlns:wicket="http://wicket.apache.org" lang="ja">
+<head>
+<wicket:container wicket:id="head">
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="js/base.js" type="text/javascript"></script>
+	<link rel="stylesheet"
+		href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="../common/css/base.css">
+	<title>XXX | CHABU-DAI</title>
+</wicket:container>
+
+</head>
+<body>
+	<div class="skeletonMaker">
+
+		<div class="head" wicket:id="bodyHead">
+			<h1><a href="index">スケルトンメーカー | CHABU-DAI<img src="../common/image/room_washitsu.png"></a></h1>
+		</div>
+
+		<form wicket:id="formMake">
+			<div wicket:id="feedback">フィードバック</div>
+			<input type="submit" wicket:id="save" value="一時保存"/>
+			<input type="submit" wicket:id="make" value="スケルトン作成" />
+			<div wicket:id="skeleton" class="box"></div>
+		</form>
+
+		<form wicket:id="formList">
+			<h2>作成済みスケルトン</h2>
+			<small>コンパイルとサーバー再起動後にリンクできます。</small>
+			<div wicket:id="feedback">フィードバック</div>
+
+			<div wicket:id="list">
+				<dl>
+					<dt>作成日</dt>
+					<dd wicket:id="date">MM/dd HH:mm</dd>
+				</dl>
+				<dl>
+					<dt>画面</dt>
+					<dd><a target="_blank" href="" wicket:id="link"><span wicket:id="name">MM/dd HH:mm</span></a></dd>
+				</dl>
+				<input type="submit" value="削除" wicket:id="delete" />
+			</div>
+		</form>
+
+	</div>
+</body>
+</html>

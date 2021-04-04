@@ -2,6 +2,7 @@ package com.github.fujiyamakazan.zabuton.chabudai.common;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 
 import com.github.fujiyamakazan.zabuton.chabudai.common.locale.LocaleLabel;
@@ -31,5 +32,16 @@ public class BodyTitlePanel extends Panel {
                 super.onInitialize();
             }
         });
+
+        add(new Link<Void>("reload") {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void onClick() {
+                /* リロード */
+                setResponsePage(getPage());
+            }
+        });
+
     }
 }

@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html xmlns:wicket="http://wicket.apache.org" lang="ja">
+<head>
+</head>
+<body>
+<wicket:panel>
+	<form wicket:id="form">
+		<div class="box">
+			<div wicket:id="feedback">フィードバック</div>
+			<div>
+				<input type="text" wicket:id="name" value="name" size="20" />
+				<select wicket:id="kind"></select>
+				<input type="submit" wicket:id="edit" value="更新" />
+				<input type="submit" wicket:id="remove" value="削除" />
+			</div>
+
+			<input type="submit" value="+" wicket:id="upper" />
+			<ul><li wicket:id="lv"><div wicket:id="child"></div></li></ul>
+			<input type="submit" value="+" wicket:id="under" />
+		</div>
+
+	</form>
+</wicket:panel>
+</body>
+</html>
