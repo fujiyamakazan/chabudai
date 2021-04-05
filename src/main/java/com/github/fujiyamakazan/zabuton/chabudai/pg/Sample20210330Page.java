@@ -29,7 +29,7 @@ public class Sample20210330Page extends AbstractChabudaiPage {
 
 
 
-//        Map<String, String> choices = new LinkedHashMap<String, String>(); // 登録準を維持するMap
+//        Map<String, String> choices = new LinkedHashMap<String, String>(); // 登録順を維持するMap
 //        List<Pair<String, String>> pairs = Generics.newArrayList();
 //        pairs.add(new Pair<String, String>() {
 //

@@ -6,10 +6,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.fujiyamakazan.zabuton.chabudai.pg.skeletonmaker.Skeleton.Type;
+import com.github.fujiyamakazan.zabuton.util.string.SubstringUtils;
 import com.github.fujiyamakazan.zabuton.util.text.Utf8Text;
 
 /**
@@ -33,14 +34,12 @@ public class SkeletonMaker implements Serializable {
         String setteingsText = settings.read();
         Skeleton skeleton = SkeletonMaker.createObject(setteingsText);
 
-        File out = new File(skeleton.outPath());
+        File out = new File(skeleton.getOutPath());
         String outPath = out.getAbsolutePath();
 
-        for (Skeleton screenObj : skeleton.getChildren()) {
-            SkeletonScreen screen = (SkeletonScreen)screenObj;
-
+        for (Skeleton screen : skeleton.getChildren()) {
             /* ファイル作成 */
-            screen.makeFile(out, skeleton.getRootPackage());
+            screen.makeFile(out, skeleton.getPackage());
         }
         log.info("スケルトンを作成しました。" + outPath);
 
@@ -52,77 +51,49 @@ public class SkeletonMaker implements Serializable {
      * @return コンポーネントオブジェクト
      */
     public static Skeleton createObject(String text) {
-
-        List<String> list = Arrays.asList(text.split("\n"));
-        Iterator<String> it = list.iterator();
-        String name = it.next().trim();
-
-        final Skeleton skeleton = new SkeletonRoot(name);
-
-        createChildren(it, skeleton);
-
-        return skeleton;
+        return createObject(text, null);
     }
 
-    private static Skeleton createObjectSub(Skeleton parent, String text) {
+    private static Skeleton createObject(String text, Skeleton parent) {
+
         List<String> list = Arrays.asList(text.split("\n"));
         Iterator<String> it = list.iterator();
-        String name = it.next().trim();
+        String line = it.next().trim();
 
-        final Skeleton skeleton;
-
-        if (StringUtils.endsWith(name, "画面")) {
-            skeleton = new SkeletonScreen(name, parent);
-
-        } else if (StringUtils.endsWith(name, "フォーム")) {
-            skeleton = new SkeletonForm(name, parent);
-
-        } else if (StringUtils.endsWith(name, "リスト")) {
-            skeleton = new SkeletonList(name, parent);
-
-        } else if (StringUtils.endsWith(name, "テキストフィールド")) {
-            skeleton = new SkeletonTextField(name, parent);
-
-        } else if (StringUtils.endsWith(name, "ブロック")) {
-            skeleton = new SkeletonBlock(name, parent);
-
-        } else if (StringUtils.endsWith(name, "リンク")) {
-            skeleton = new SkeletonLink(name, parent);
-
-        } else if (StringUtils.endsWith(name, "ラベル")) {
-            skeleton = new SkeletonLabel(name, parent);
-
-        } else {
-            throw new RuntimeException("スケルトンの種類が判定で決まません。使用できるのは次の接尾子です。"
-                + Skeleton.Type.values());
-
+        if (line.contains("[") == false && line.endsWith("]")) {
+            throw new RuntimeException("名前[種類] の形式になっていません。");
         }
 
-        createChildren(it, skeleton);
+        String name = SubstringUtils.left(line, "[");
+        Skeleton.Type type = Type.valueOf(SubstringUtils.between(line, "[", "]"));
 
-        return skeleton;
-    }
+        /* 1行目から自身のオブジェクトを生成します。*/
+        final Skeleton skeleton = new Skeleton(name, parent, type);
 
-    private static void createChildren(Iterator<String> it, final Skeleton parent) {
+        /* 2行目以降から子階層のオブジェクトを生成します。*/
         StringBuilder buffer = new StringBuilder();
         while (it.hasNext()) {
-            String line = it.next();
-            line = line.substring(1);
+            line = it.next();
+            line = line.substring(1); // インデントを1つ解除
             int indent = countIndent(line);
             if (line.isEmpty()) {
                 continue;
             }
             if (indent == 0) {
                 if (buffer.toString().isEmpty() == false) {
-                    parent.addChild(createObjectSub(parent, buffer.toString()));
+                    Skeleton child = createObject(buffer.toString(), skeleton); // 再帰処理
+                    skeleton.addChild(child);
                     buffer = new StringBuilder();
                 }
             }
             buffer.append(line + "\n");
         }
         if (buffer.toString().isEmpty() == false) {
-            parent.addChild(createObjectSub(parent, buffer.toString()));
+            Skeleton child = createObject(buffer.toString(), skeleton); // 再帰処理
+            skeleton.addChild(child);
         }
+
+        return skeleton;
     }
 
     private static int countIndent(String string) {
@@ -136,4 +107,5 @@ public class SkeletonMaker implements Serializable {
         }
         return count;
     }
+
 }

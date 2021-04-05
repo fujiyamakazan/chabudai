@@ -25,8 +25,6 @@ import org.slf4j.LoggerFactory;
 import com.github.fujiyamakazan.zabuton.chabudai.common.AbstractChabudaiPage;
 import com.github.fujiyamakazan.zabuton.chabudai.pg.skeletonmaker.Skeleton;
 import com.github.fujiyamakazan.zabuton.chabudai.pg.skeletonmaker.SkeletonMaker;
-import com.github.fujiyamakazan.zabuton.chabudai.pg.skeletonmaker.SkeletonScreen;
-import com.github.fujiyamakazan.zabuton.chabudai.pg.skeletonmaker.SkeletonValidator;
 import com.github.fujiyamakazan.zabuton.util.text.Utf8Text;
 
 /**
@@ -53,7 +51,7 @@ public class SkeletonMakerPage extends AbstractChabudaiPage {
         Utf8Text settings = new Utf8Text(saveData);
         if (saveData.exists() == false) {
             saveData.getParentFile().mkdirs();
-            settings.write("com.example.abc");
+            settings.write("com.example.sample[ROOT]");
         }
         String setteingsText = settings.read();
         skeleton = SkeletonMaker.createObject(setteingsText);
@@ -65,8 +63,9 @@ public class SkeletonMakerPage extends AbstractChabudaiPage {
             protected void onConfigure() {
                 super.onConfigure();
 
-                if (StringUtils.startsWith(skeleton.getRootPackage(), "com.example.abc")) {
+                if (StringUtils.startsWith(skeleton.getPackage(), "com.example.sample")) {
                     info("スケルトンを作成するパッケージを決めてください。");
+
                 } else {
                     if (skeleton.hasAnyScreen() == false) {
                         info("[+]ボタンで画面を追加してください。");
@@ -95,9 +94,14 @@ public class SkeletonMakerPage extends AbstractChabudaiPage {
                     public void onSubmit() {
                         super.onSubmit();
 
-                        String chkMsg = SkeletonValidator.check(skeleton);
-                        if (StringUtils.isNotEmpty(chkMsg)) {
-                            error(chkMsg);
+                        try {
+
+                            skeleton.check();
+
+                        } catch (Exception e) {
+
+                            error(e.getMessage());
+
                         }
 
                         if (hasError()) {
@@ -106,12 +110,11 @@ public class SkeletonMakerPage extends AbstractChabudaiPage {
                         }
 
                         /* 設定保存 */
-                        settings.write(skeleton.toString());
+                        settings.write(skeleton.getSettingText());
 
                         log.info("保存しました。" + settings.getFile().getAbsolutePath());
                         success("保存しました。" + settings.getFile().getAbsolutePath());
                     }
-
                 });
 
                 /*
@@ -130,9 +133,14 @@ public class SkeletonMakerPage extends AbstractChabudaiPage {
                     public void onSubmit() {
                         super.onSubmit();
 
-                        String chkMsg = SkeletonValidator.check(skeleton);
-                        if (StringUtils.isNotEmpty(chkMsg)) {
-                            error(chkMsg);
+                        try {
+
+                            skeleton.check();
+
+                        } catch (Exception e) {
+
+                            error(e.getMessage());
+
                         }
 
                         if (hasError()) {
@@ -141,12 +149,12 @@ public class SkeletonMakerPage extends AbstractChabudaiPage {
                         }
 
                         /* 設定保存 */
-                        settings.write(skeleton.toString());
+                        settings.write(skeleton.getSettingText());
 
                         /*
                          * スケルトン作成
                          */
-                        File out = new File(skeleton.outPath());
+                        File out = new File(skeleton.getOutPath());
                         String outPath = out.getAbsolutePath();
 
                         if (out.exists() == false) {
@@ -167,15 +175,14 @@ public class SkeletonMakerPage extends AbstractChabudaiPage {
 
                         /* ファイル作成 */
                         for (Skeleton screen : skeleton.getChildren()) {
-                            screen.makeFile(out, skeleton.getRootPackage());
+                            screen.makeFile(out, skeleton.getPackage());
                         }
                         success("スケルトンを作成しました。" + outPath);
                         log.info("スケルトンを作成しました。" + outPath);
 
                         String names = "";
-                        for (Skeleton screenObj : skeleton.getChildren()) {
-                            SkeletonScreen screen = (SkeletonScreen)screenObj;
-                            names += screen.getName() + "Page";
+                        for (Skeleton screen : skeleton.getChildren()) {
+                            names += screen.getName() + "Page,";
                         }
                         String message = "スケルトンを作成しました。\n";
                         message += names;
@@ -196,7 +203,7 @@ public class SkeletonMakerPage extends AbstractChabudaiPage {
                 @Override
                 protected List<File> load() {
                     List<File> pages = Generics.newArrayList();
-                    File dir = new File(skeleton.outPath());
+                    File dir = new File(skeleton.getOutPath());
                     if (dir.exists() == false) {
                         return Generics.newArrayList();
                     }
@@ -223,8 +230,8 @@ public class SkeletonMakerPage extends AbstractChabudaiPage {
                     @Override
                     protected void populateItem(ListItem<File> item) {
 
-
                         File pageJava = item.getModelObject();
+                        String pageName = pageJava.getName().replaceAll(Pattern.quote(".java"), "");
                         String setName = pageJava.getAbsolutePath().replaceAll(Pattern.quote("Page.java"), "");
 
                         String date = new SimpleDateFormat("MM/dd HH:mm").format(new Date(pageJava.lastModified()));
@@ -235,9 +242,9 @@ public class SkeletonMakerPage extends AbstractChabudaiPage {
                             @Override
                             protected void onInitialize() {
                                 super.onInitialize();
-                                add(new Label("name", setName));
+                                add(new Label("name", pageName));
 
-                                String href = skeleton.getRootPackage() + "." +  setName + "Page";
+                                String href = skeleton.getPackage() + "." +  pageName;
                                 add(AttributeModifier.replace("href", href));
                             }
                         });

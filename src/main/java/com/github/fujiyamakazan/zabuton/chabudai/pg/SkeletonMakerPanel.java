@@ -20,7 +20,6 @@ import org.apache.wicket.util.lang.Generics;
 
 import com.github.fujiyamakazan.zabuton.chabudai.pg.skeletonmaker.Skeleton;
 import com.github.fujiyamakazan.zabuton.chabudai.pg.skeletonmaker.Skeleton.Type;
-import com.github.fujiyamakazan.zabuton.chabudai.pg.skeletonmaker.SkeletonRoot;
 
 public class SkeletonMakerPanel extends Panel {
 
@@ -172,7 +171,7 @@ public class SkeletonMakerPanel extends Panel {
                     @Override
                     protected void onConfigure() {
                         super.onConfigure();
-                        setEnabled((skeleton instanceof SkeletonRoot) == false);
+                        setEnabled(skeleton.isRoot());
                     }
 
                     @Override
@@ -261,9 +260,9 @@ public class SkeletonMakerPanel extends Panel {
             private Skeleton createNew() {
                 final Skeleton newChild;
                 if (skeleton.getType().equals(Type.ROOT)) {
-                    newChild = new Skeleton("", skeleton, Type.画面);
+                    newChild = new Skeleton("New", skeleton, Type.画面);
                 } else {
-                    newChild = new Skeleton("", skeleton, Type.ブロック);
+                    newChild = new Skeleton("New", skeleton, Type.ブロック);
                 }
                 return newChild;
             }

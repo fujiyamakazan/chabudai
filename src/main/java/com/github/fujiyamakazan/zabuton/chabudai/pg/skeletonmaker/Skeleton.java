@@ -25,7 +25,8 @@ public class Skeleton implements Serializable {
     static final Logger log = LoggerFactory.getLogger(Skeleton.class);
 
     public enum Type {
-        ROOT, 画面, ブロック, フォーム, リスト, ラベル, テキストフィールド, セレクトボックス, チェックボックス, リンク;
+        ROOT, 画面, ブロック, フォーム, リスト, ラベル,
+        テキストフィールド, セレクトボックス, チェックボックス, リンク;
 
         /**
          * フォームコンポーネントか判定します。
@@ -33,7 +34,8 @@ public class Skeleton implements Serializable {
          * @return フォームコンポーネントならTrue
          */
         public static boolean isFormComponent(Type type) {
-            return type.equals(Type.テキストフィールド)
+            return
+                type.equals(Type.テキストフィールド)
                 || type.equals(Type.セレクトボックス)
                 || type.equals(Type.チェックボックス);
         }
@@ -52,16 +54,45 @@ public class Skeleton implements Serializable {
         }
     }
 
-    protected String name;
+    private String toSkeletonName() {
+        switch (type) {
+            case ブロック:
+                return "SkeletonBlock";
+            case フォーム:
+                return "SkeletonForm";
+            case リスト:
+                return "SkeletonList";
+            case ラベル:
+                return "SkeletonLabel";
+            case テキストフィールド:
+                return "SkeletonTextField";
+            case セレクトボックス:
+                return "SkeletonSelectBox";
+            case チェックボックス:
+                return "SkeletonCheckBox";
+            case リンク:
+                return "SkeletonLink";
+            default:
+                throw new RuntimeException();
+        }
+    }
+
+    private String name;
 
     private Type type;
 
     private Skeleton parent;
 
+    private List<Skeleton> children = Generics.newArrayList();
+
+    private String linkScreenName; // リンクコンポーネント用
+
+    private String itemName; // テキストフィールドコンポーネント用
+
     /**
      * コンストラクタです。
      * @param name 名前
-     * @param type 種別
+     * @param type 種類
      * @param parent 親コンポーネント
      */
     public Skeleton(String name, Skeleton parent, Type type) {
@@ -69,10 +100,28 @@ public class Skeleton implements Serializable {
         this.type = type;
         this.parent = parent;
 
-        if (parent != null) {
-            if (Type.isContainer(parent.getType()) == false) {
-                throw new RuntimeException();
+        /* 「種類」と「親」の妥当性検査 */
+        try {
+            check(name, type, parent);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        /*
+         * 種類ごとの追加情報を取得
+         */
+        if (type.equals(Type.リンク)) {
+            if (StringUtils.endsWith(name, "へのリンク")) {
+                this.linkScreenName = SubstringUtils.left(name, "へのリンク");
+            } else {
+                throw new RuntimeException("リンク先が特定できません。");
             }
+        }
+        if (type.equals(Type.テキストフィールド)
+                || type.equals(Type.チェックボックス)
+                || type.equals(Type.セレクトボックス)
+                ) {
+            this.itemName = name;
         }
 
     }
@@ -93,7 +142,9 @@ public class Skeleton implements Serializable {
         return this.type;
     }
 
-    protected List<Skeleton> children = Generics.newArrayList();
+    public boolean isRoot() {
+        return type.equals(Type.ROOT);
+    }
 
     public List<Skeleton> getChildren() {
         return children;
@@ -115,6 +166,7 @@ public class Skeleton implements Serializable {
         return parent;
     }
 
+
     /**
      * 「フォーム」の配下かどうかを判定します。
      * @return 配下ならTrue
@@ -133,7 +185,15 @@ public class Skeleton implements Serializable {
         return Type.isContainer(type);
     }
 
-    protected String getHtml(int indent) {
+
+    public boolean hasAnyScreen() {
+        if (parent != null) {
+            return parent.hasAnyScreen();
+        }
+        return getChildren().isEmpty() == false;
+    }
+
+    private String getHtml(int indent) {
         StringBuilder childText = new StringBuilder();
         for (Skeleton child : children) {
             String childHtml = child.getHtml(indent + 1);
@@ -141,18 +201,22 @@ public class Skeleton implements Serializable {
                 childText.append(childHtml);
             }
         }
-        String comonentText = ResourceUtils.getAsUtf8Text(getTemplateHtml(), SkeletonTemplate.class);
-        comonentText = SubstringUtils.between(comonentText, "<!-- start -->\r\n", "\t<!-- end -->");
-        comonentText = comonentText.replaceAll("component_name", name);
-        comonentText = comonentText.replaceAll("ComponentName", name);
-        comonentText = comonentText.replaceAll(
+        String text = ResourceUtils.getAsUtf8Text(getTemplateHtml(), SkeletonTemplate.class);
+        if (StringUtils.isEmpty(text)) {
+            throw new RuntimeException(type + "のテンプレートが不正です。");
+        }
+        text = SubstringUtils.between(text, "<!-- start -->\r\n", "\t<!-- end -->");
+        text = text.replaceAll("component_name", name);
+        text = text.replaceAll("ComponentName", name);
+        text = text.replaceAll("html_name", linkScreenName + "Page.html"); // 「リンク」用
+        text = text.replaceAll(
             Pattern.quote("\t\t<div>" + name + "の子コンポーネント</div>\r\n"),
             paddingTabAllLines(childText.toString()));
 
-        return comonentText;
+        return text;
     }
 
-    protected String getJava(int indent) {
+    private String getJava(int indent) {
         StringBuilder childText = new StringBuilder();
         for (Skeleton child : children) {
             String childJava = child.getJava(indent + 1);
@@ -161,15 +225,48 @@ public class Skeleton implements Serializable {
             }
         }
 
-        String comonentText = ResourceUtils.getAsUtf8Text(getTemplateJava(), SkeletonTemplate.class);
-        comonentText = SubstringUtils.between(comonentText, "/* start */\r\n    {\r\n", "    }\r\n    /* end */");
-        comonentText = comonentText.replaceAll("component_name", name);
-        comonentText = comonentText.replaceAll("ComponentName", name);
-        comonentText = comonentText.replaceAll(
-            Pattern.quote("                /* " + name + "の子コンポーネント */\r\n"),
-            paddinSpaceAllLines(childText.toString()));
+        String text = ResourceUtils.getAsUtf8Text(getTemplateJava(), SkeletonTemplate.class);
+        if (StringUtils.isEmpty(text)) {
+            throw new RuntimeException(type + "のテンプレートが不正です。");
+        }
+        text = SubstringUtils.between(text, "/* start */\r\n    {\r\n", "    }\r\n    /* end */");
+        text = text.replaceAll("component_name", name);
+        text = text.replaceAll("ComponentName", name);
+        text = text.replaceAll("WebPage.class,", linkScreenName + "Page.class,"); // 「リンク」用
+        text = text.replaceAll("item_name", itemName); // 「テキストフィールド」用
+        text = text.replaceAll(Pattern.quote("@SuppressWarnings(\"unused\")"), "");
+        if (type.equals(Type.リスト)) {
+            text = text.replaceAll(
+                    Pattern.quote("                                /* " + name + "の子コンポーネント */\r\n"), // インデントの量が他と異なる
+                    paddinSpaceAllLinesForList(childText.toString()));
 
-        return comonentText;
+        } else {
+            text = text.replaceAll(
+                    Pattern.quote("                /* " + name + "の子コンポーネント */\r\n"),
+                    paddinSpaceAllLines(childText.toString()));
+
+        }
+        return text;
+    }
+
+    private String paddinSpaceAllLines(String lines) {
+        String newLines = "";
+        for (String line : lines.split("\n")) {
+            if (line.isEmpty() == false) {
+                newLines += "        " + line + "\n";
+            }
+        }
+        return newLines;
+    }
+
+    private String paddinSpaceAllLinesForList(String lines) {
+        String newLines = "";
+        for (String line : lines.split("\n")) {
+            if (line.isEmpty() == false) {
+                newLines += "                        " + line + "\n"; // インデントの量が他と異なる。[item.]を付与。
+            }
+        }
+        return newLines;
     }
 
     /**
@@ -192,12 +289,51 @@ public class Skeleton implements Serializable {
         return imports;
     }
 
-    protected final String getTemplateHtml() {
-        return getClass().getSimpleName() + "Template.html";
+    /**
+     * 設定ファイルに書き出すテキストを生成します。
+     * @return 設定テキスト
+     */
+    public String getSettingText() {
+        return getSettingText(0);
+    }
+    /**
+     * 設定ファイルに書き出すテキストを生成します。
+     * @param indent インデント
+     * @return 設定テキスト
+     */
+    private String getSettingText(int indent) {
+        String space = StringUtils.repeat('\t', indent);
+        StringBuffer sb = new StringBuffer();
+
+        /* 自身のテキスト */
+        sb.append(space + name + "[" + type + "]\n");
+
+        /* 子階層のテキスト */
+        for (Skeleton child : children) {
+            sb.append(child.getSettingText(indent + 1));
+        }
+        return sb.toString();
     }
 
+//    @Override
+//    public String toString() {
+//        return toString(0);
+//    }
+
+    private static final String PANEL_TEMPLATE_JAVA = "SkeletonPanelTemplate.java";
+    private static final String PANEL_TEMPLATE_HTML = "SkeletonPanelTemplate.html";
+    private static final String PAGE_TEMPLATE_JAVA = "SkeletonPageTemplate.java";
+    private static final String PAGE_TEMPLATE_HTML = "SkeletonPageTemplate.html";
+
+    protected final String getTemplateHtml() {
+        String templateName = toSkeletonName() + "Template.html";
+        log.debug(templateName);
+        return templateName;
+    }
     protected final String getTemplateJava() {
-        return getClass().getSimpleName() + "Template.java";
+        String templateName = toSkeletonName() + "Template.java";
+        log.debug(templateName);
+        return templateName;
     }
 
     protected String paddingTabAllLines(String lines) {
@@ -210,42 +346,14 @@ public class Skeleton implements Serializable {
         return newLines;
     }
 
-    protected String paddinSpaceAllLines(String lines) {
-        String newLines = "";
-        for (String line : lines.split("\n")) {
-            if (line.isEmpty() == false) {
-                newLines += "        " + line + "\n";
-            }
-        }
-        return newLines;
-    }
 
-    /**
-     * インデントを付与することができるtoStringです。
-     * @param indent インデント
-     * @return 文字列
-     */
-    public String toString(int indent) {
-        String space = StringUtils.repeat('\t', indent);
-        StringBuffer sb = new StringBuffer();
-        sb.append(space + name + "\n");
-        for (Skeleton child : children) {
-            sb.append(child.toString(indent + 1));
-        }
-        return sb.toString();
-    }
-
-    @Override
-    public String toString() {
-        return toString(0);
-    }
 
     /**
      * スケルトンを出力するフォルダを返します。
      * @return スケルトンを出力するフォルダ
      */
-    public String outPath() {
-        String pack = getRootPackage();
+    public String getOutPath() {
+        String pack = getPackage();
         String pathname = "src/main/java/" + pack.replaceAll(Pattern.quote("."), "/");
         File file = new File(pathname);
         return file.getAbsolutePath();
@@ -255,23 +363,12 @@ public class Skeleton implements Serializable {
      * ルートのパッケージを返します。
      * @return ルートのパッケージ
      */
-    public String getRootPackage() {
-        if (this instanceof SkeletonRoot == false) {
-            return parent.outPath();
+    public String getPackage() {
+        if (getParent() != null) {
+            return parent.getPackage();
         }
         return name;
     }
-
-    public boolean hasAnyScreen() {
-        return this instanceof SkeletonRoot && children.isEmpty() == false;
-    }
-
-
-    private static final String PANEL_TEMPLATE_JAVA = "SkeletonPanelTemplate.java";
-    private static final String PANEL_TEMPLATE_HTML = "SkeletonPanelTemplate.html";
-    private static final String PAGE_TEMPLATE_JAVA = "SkeletonPageTemplate.java";
-    private static final String PAGE_TEMPLATE_HTML = "SkeletonPageTemplate.html";
-
 
     /**
      * テキスト定義からファイルを生成します。
@@ -345,6 +442,54 @@ public class Skeleton implements Serializable {
             panelJava.write(text);
         }
     }
+
+    /**
+     * 妥当性検査をします。
+     * @throws Exception 妥当性検査でエラーを検知したとき
+     */
+    public void check() throws Exception {
+
+        check(name, type, parent);
+
+    }
+
+    /**
+     * 妥当性検査をします。
+     * @throws Exception 妥当性検査でエラーを検知したとき
+     */
+    public static void check(String name, Skeleton.Type type, Skeleton parent) throws Exception {
+
+        if (StringUtils.isBlank(name)) {
+            throw new Exception("名前が指定されていません。");
+        }
+
+        if (type == null) {
+            throw new Exception("種類が指定されていません。" + name);
+        }
+
+        if (type.equals(Type.ROOT) && parent != null) {
+            throw new Exception("ROOTは親コンポーネントを指定できません。" + name);
+        }
+        if (parent == null) {
+            if (type.equals(Type.ROOT) == false) {
+                throw new Exception("親コンポーネントが指定されていません。" + name);
+            }
+        } else {
+            if (type.equals(Type.ROOT)) {
+                throw new Exception("ROOTは親コンポーネントを指定できません。" + name);
+            }
+            if (type.equals(Type.画面)) {
+                if (parent.getType().equals(Type.ROOT) == false) {
+                    throw new Exception("画面はRootの下に配置してください。" + name);
+                }
+            }
+            if (Type.isContainer(parent.getType()) == false) {
+                throw new Exception("親コンポーネントがコンテナではありません。" + name);
+            }
+        }
+    }
+
+
 
 
 

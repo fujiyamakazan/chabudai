@@ -1,5 +1,6 @@
 package com.github.fujiyamakazan.zabuton.chabudai.pg.skeletonmaker;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.apache.wicket.feedback.ContainerFeedbackMessageFilter;
@@ -17,6 +18,27 @@ public class SkeletonFormTemplate extends SkeletonTemplate {
 
             /* 閲覧モード用フラグ */
             private boolean isView = false;
+
+            @SuppressWarnings("unused")
+            class ChoiceItem implements Serializable{
+                private static final long serialVersionUID = 1L;
+
+                private final String id;
+                private final String name;
+
+                public ChoiceItem(String id) {
+                    this.id = id;
+                    this.name = id;
+                }
+                public ChoiceItem(String id,String name) {
+                    this.id = id;
+                    this.name = name;
+                }
+                @Override
+                public String toString() {
+                    return name;
+                }
+            }
 
             @Override
             protected void onInitialize() {
@@ -42,7 +64,7 @@ public class SkeletonFormTemplate extends SkeletonTemplate {
                         super.onSubmit();
 
                         /*
-                         * 単項目ではチェックできないエラーのチェックをします。
+                         * TODO 単項目ではチェックできないエラーのチェックをします。
                          * エラーを検知したら、errorメソッドにメッセージを入れます。
                          */
                         // String str1 = modelXXX.getValue();
@@ -62,7 +84,7 @@ public class SkeletonFormTemplate extends SkeletonTemplate {
                     }
                 });
                 /*
-                 * 確定
+                 * 確定 TODO 閲覧モード（確認画面）が不要であれば削除
                  */
                 add(new Button("commit") {
                     private static final long serialVersionUID = 1L;
@@ -82,7 +104,7 @@ public class SkeletonFormTemplate extends SkeletonTemplate {
                         super.onSubmit();
 
                         /*
-                         * エラーチェック
+                         * TODO エラーチェック
                          * データの状態が変わっているかもしれません。「入力ボタン」の時と
                          * 同様のチェックを行います。チェック処理はメソッドなどで共通化することを推奨します。
                          */
@@ -90,7 +112,8 @@ public class SkeletonFormTemplate extends SkeletonTemplate {
                         // error(エラーメッセージ)
                         // return; // ここで終了
 
-                        /* DB書込みなどの処理をおこないます */
+                        /* TODO DB処理などを行い、結果をフィードバックします。 */
+                        error("処理が失敗しました");
                         success("処理が終了しました");
                     }
                 });
@@ -120,7 +143,7 @@ public class SkeletonFormTemplate extends SkeletonTemplate {
                 });
 
                 /*
-                 * リセットボタン
+                 * リセットボタン TODO 不要なら削除
                  * 　画面を表示した時点の値に戻す
                  */
                 add(new Button("reset") {

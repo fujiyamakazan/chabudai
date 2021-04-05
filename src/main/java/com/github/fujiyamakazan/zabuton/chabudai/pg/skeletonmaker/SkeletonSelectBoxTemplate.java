@@ -1,25 +1,27 @@
 package com.github.fujiyamakazan.zabuton.chabudai.pg.skeletonmaker;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.util.lang.Generics;
 import org.apache.wicket.validation.IErrorMessageSource;
 import org.apache.wicket.validation.IValidationError;
-import org.apache.wicket.validation.validator.EmailAddressValidator;
 
-public class SkeletonTextFieldTemplate extends SkeletonTemplate {
+public class SkeletonSelectBoxTemplate extends SkeletonTemplate {
 
     private boolean isView = false;
 
     /* start */
     {
-        final Model<String> model_component_name = new Model<String>(); // TODO モデルに初期値を登録
+        final Model<ChoiceItem> model_component_name = new Model<ChoiceItem>(); // TODO モデルに初期値を登録
         add(new WebMarkupContainer("component_name") {
             private static final long serialVersionUID = 1L;
 
@@ -28,18 +30,26 @@ public class SkeletonTextFieldTemplate extends SkeletonTemplate {
                 super.onInitialize();
 
                 final String itemName = "item_name";
-                TextField<String> input = new TextField<String>("input", model_component_name) {
+                /* TODO 選択肢の構築 */
+                List<ChoiceItem> choices = Generics.newArrayList();
+                for (int i = 0; i < 3; i++) {
+                    choices.add(new ChoiceItem(String.valueOf(i), "選択肢" + i));
+                }
+                //model_component_name.setObject(new ChoiceItem("1")); // TODO 初期選択
+
+                /* セレクトボックス */
+                DropDownChoice<ChoiceItem> input = new DropDownChoice<ChoiceItem>("input",
+                        model_component_name,
+                        choices,
+                        new ChoiceRenderer<ChoiceItem>("name", "id")
+                        ) {
                     private static final long serialVersionUID = 1L;
 
                     @Override
                     protected void onInitialize() {
                         super.onInitialize();
-
-                        /* TODO 単項目チェックの定義 */
-                        setRequired(true); // 入力必須とする
-                        add(EmailAddressValidator.getInstance()); // Eメール形式チェックする
+                        setRequired(true); // TODO 選択必須でなければ除去
                     }
-
                     @Override
                     protected void onConfigure() {
                         super.onConfigure();
@@ -47,24 +57,28 @@ public class SkeletonTextFieldTemplate extends SkeletonTemplate {
                     }
 
                     @Override
+                    protected String getNullValidDisplayValue() {
+                        // TODO 自動生成されたメソッド・スタブ
+                        return "abc";
+                    }
+                    @Override
+                    protected String getNullKeyDisplayValue() {
+                        return "選択してください"; // TODO
+                    }
+                    @Override
                     public void error(IValidationError error) {
                         Serializable msg = error.getErrorMessage(new IErrorMessageSource() {
                             @Override
                             public String getMessage(String key, Map<String, Object> vars) {
-
                                 /* TODO 単項目チェックのエラーメッセージを設定 */
                                 if (StringUtils.equals(key, "Required")) {
-                                    return itemName + "を入力してください。";
-                                }
-                                if (StringUtils.equals(key, "EmailAddressValidator")) {
-                                    return itemName + "がメールアドレスの形式ではありません。";
+                                    return itemName + "を選択してください。";
                                 }
                                 return null;
                             }
                         });
                         error(msg);
                     }
-
                 };
                 add(input);
                 resist(input); // formに登録
@@ -98,7 +112,6 @@ public class SkeletonTextFieldTemplate extends SkeletonTemplate {
                         }
                     }
                 });
-
                 /*
                  * 閲覧モード用テキスト
                  */
@@ -110,7 +123,6 @@ public class SkeletonTextFieldTemplate extends SkeletonTemplate {
                         super.onConfigure();
                         setVisible(isView);
                     }
-
                 });
 
                 /* component_nameの子コンポーネント */
@@ -119,8 +131,4 @@ public class SkeletonTextFieldTemplate extends SkeletonTemplate {
         }); // component_name ここまで
     }
     /* end */
-
-
-
-
 }
