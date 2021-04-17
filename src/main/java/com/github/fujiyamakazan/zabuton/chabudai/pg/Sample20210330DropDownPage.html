@@ -15,23 +15,25 @@
 <body>
 	<div class="sample">
 		<div class="head" wicket:id="bodyHead">
-			<h1><a href="index">Wicket Messageタグ | CHABU-DAI<img src="../common/image/room_washitsu.png"></a></h1>
+			<h1><a href="index">セレクトボックス/「選んでください」 | CHABU-DAI<img src="../common/image/room_washitsu.png"></a></h1>
 		</div>
 
-		<div>
-			<p>プロパティファイルの値を表示</p>
-			<wicket:message key="key1">キー1</wicket:message>
-		</div>
+		<form wicket:id="form">
 
-		<div>
-			<p>動的に決定した値を表示</p>
-			<wicket:message key="001" ex="ex">[msg]レベル [001]のメッセージ</wicket:message>
-		</div>
+			<div wicket:id="feedback">feedback</div>
 
-		<div wicket:id="abc">
-			タグ内部
-		</div>
+			<div>
+				<span>「選んでください」をプロパティファイルで修正</span>
+				<select wicket:id="select1"><option>選択肢</option></select>
+			</div>
+			<div>
+				<span>「選んでください」をオーバーライドで修正</span>
+				<select wicket:id="select2"><option>選択肢</option></select>
+			</div>
 
+			<input type="submit" />
+
+		</form>
 
 	</div>
 </body>

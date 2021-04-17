@@ -18,6 +18,7 @@ public class SkeletonTemplate {
     protected class ChoiceItem implements Serializable{
         private static final long serialVersionUID = 1L;
 
+        @SuppressWarnings("unused")
         private final String id;
         private final String name;
 

@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html xmlns:wicket="http://wicket.apache.org" lang="ja">
+<head>
+<wicket:container wicket:id="head">
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<script src="js/base.js" type="text/javascript"></script>
+	<link rel="stylesheet"
+		href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="../common/css/base.css">
+	<title>XXX | CHABU-DAI</title>
+</wicket:container>
+
+</head>
+<body>
+	<div class="sample">
+		<div class="head" wicket:id="bodyHead">
+			<h1><a href="index">Wicket Messageタグ | CHABU-DAI<img src="../common/image/room_washitsu.png"></a></h1>
+		</div>
+		<div>
+			<p>プロパティファイルの値を表示</p>
+			<wicket:message key="key1">キー1</wicket:message>
+		</div>
+		<div>
+			<p>動的に決定した値を表示</p>
+			<wicket:message key="001" ex="ex">[msg]レベル [001]のメッセージ</wicket:message>
+		</div>
+	</div>
+</body>
+</html>

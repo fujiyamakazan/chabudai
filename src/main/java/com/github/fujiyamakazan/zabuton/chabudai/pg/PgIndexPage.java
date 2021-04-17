@@ -15,9 +15,10 @@ public class PgIndexPage extends AbstractChabudaiPage {
 
         add(new BookmarkablePageLink<Void>("SkeletonMakerPage", SkeletonMakerPage.class));
 
-        add(new BookmarkablePageLink<Void>("Sample20210328Page", Sample20210328Page.class));
-        add(new BookmarkablePageLink<Void>("Sample20210329Page", Sample20210329Page.class));
-        add(new BookmarkablePageLink<Void>("Sample20210330Page", Sample20210330Page.class));
+        add(new BookmarkablePageLink<Void>("Sample20210328TextFieldPage", Sample20210328TextFieldPage.class));
+        add(new BookmarkablePageLink<Void>("Sample20210329MessgeTagPage", Sample20210329MessageTagPage.class));
+        add(new BookmarkablePageLink<Void>("Sample20210330DropDownPage", Sample20210330DropDownPage.class));
+        add(new BookmarkablePageLink<Void>("Sample20210416TextMarkupPage", Sample20210416TextMarkupPage.class));
     }
 
 

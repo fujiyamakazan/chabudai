@@ -29,12 +29,11 @@ import com.github.fujiyamakazan.zabuton.chabudai.common.AbstractChabudaiPage;
  * 動的なメッセージも出力でした。
  *
  * @author fujiyama
- *
  */
-public class Sample20210328Page extends AbstractChabudaiPage {
+public class Sample20210328TextFieldPage extends AbstractChabudaiPage {
 
     @SuppressWarnings("unused")
-    private static final Logger log = LoggerFactory.getLogger(Sample20210328Page.class);
+    private static final Logger log = LoggerFactory.getLogger(Sample20210328TextFieldPage.class);
 
     private static final long serialVersionUID = 1L;
 
