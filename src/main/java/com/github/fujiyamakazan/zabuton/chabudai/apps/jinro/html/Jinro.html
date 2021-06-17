@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html xmlns:wicket="http://wicket.apache.org" lang="ja">
+<head>
+<script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script src="jinro.js"></script>
+<style>
+*{
+    user-select: none;
+}
+
+</style>
+
+<script>
+	$(function() {
+
+		var players = [];
+		$('.character').each(function(index, textbox){
+			players.push(new JinroPlayer($(textbox).val(), ""));
+		});
+
+
+		$('#go').click(function() {
+			var jinro = new Jinro();
+			jinro.test();
+
+			jinro.play(players);
+
+			var info1 = new JinroInfo(me, sq, JinroResult.A);
+			var info2 = new JinroInfo(setsu, sq, JinroResult.A);
+
+			var str = jinro.infoTest([ info1, info2 ]);
+			$('textarea').text(str);
+		});
+
+		$('.member').click(function() {
+			var newText = newText = players[0].name;
+			for (var i = 0; i < players.length; i++) {
+				if ($(this).text() == players[i].name) {
+					if (i + 1 < players.length - 1) {
+						newText = players[i + 1].name;
+					} else {
+						newText = "......"
+					}
+				}
+			}
+			$(this).text(newText);
+		});
+        $('.wv').click(function() {
+        	if ($(this).text() == '？') {
+        		$(this).text('〇');
+        	} else if ($(this).text() == '〇') {
+                $(this).text('×');
+            } else {
+            	$(this).text('？');
+            }
+        });
+        $('#reset').click(function() {
+        	$('.member').each(function(index, textbox){
+                $(textbox).text('.....');
+            });
+            $('.wv').each(function(index, textbox){
+                $(textbox).text('？');
+            });
+        });
+
+	});
+</script>
+</head>
+<body>
+    <input type="text" id="member1" class="character" size="5" value="ME...." />
+    <input type="text" id="member2" class="character" size="5" value="setsu." />
+    <input type="text" id="member3" class="character" size="5" value="sq...." />
+    <input type="text" id="member4" class="character" size="5" value="jina.." />
+    <input type="text" id="member5" class="character" size="5" value="racio." /><br />
+
+    <input type="text" id="member6" class="character" size="5" value="shige." />
+    <input type="text" id="member7" class="character" size="5" value="stella" />
+    <input type="text" id="member8" class="character" size="5" value="kukuru" />
+    <input type="text" id="member9" class="character" size="5" value="jonas." />
+    <input type="text" id="memberA" class="character" size="5" value="Ming.." /><br />
+
+    <input type="text" id="memberB" class="character" size="5" value="otome." />
+    <input type="text" id="memberC" class="character" size="5" value="chipie" />
+    <input type="text" id="memberD" class="character" size="5" value="comet." />
+    <input type="text" id="memberE" class="character" size="5" value="yuriko" />
+    <input type="text" id="memberF" class="character" size="5" value="remnan" /><br />
+
+    <div>
+        Eng【<span id="engA" class="member">......</span>】→
+        <span>1.[<span id="engA1" class="member">......</span>]<span id="engA1wv" class="wv">？</span></span>
+        <span>2.[<span id="engA2" class="member">......</span>]<span id="engA2wv" class="wv">？</span></span>
+        <span>3.[<span id="engA3" class="member">......</span>]<span id="engA3wv" class="wv">？</span></span>
+        <span>4.[<span id="engA4" class="member">......</span>]<span id="engA4wv" class="wv">？</span></span>
+        <span>5.[<span id="engA5" class="member">......</span>]<span id="engA5wv" class="wv">？</span></span>
+    </div>
+    <div>
+        Eng【<span id="engB" class="member">......</span>】→
+        <span>1.[<span id="engB1" class="member">......</span>]<span id="engB1wv" class="wv">？</span></span>
+        <span>2.[<span id="engB2" class="member">......</span>]<span id="engB2wv" class="wv">？</span></span>
+        <span>3.[<span id="engB3" class="member">......</span>]<span id="engB3wv" class="wv">？</span></span>
+        <span>4.[<span id="engB4" class="member">......</span>]<span id="engB4wv" class="wv">？</span></span>
+        <span>5.[<span id="engB5" class="member">......</span>]<span id="engB5wv" class="wv">？</span></span>
+    </div>
+    <div>
+        Eng【<span id="engC" class="member">......</span>】→
+        <span>1.[<span id="engC1" class="member">......</span>]<span id="engC1wv" class="wv">？</span></span>
+        <span>2.[<span id="engC1" class="member">......</span>]<span id="engC1wv" class="wv">？</span></span>
+        <span>3.[<span id="engC3" class="member">......</span>]<span id="engC3wv" class="wv">？</span></span>
+        <span>4.[<span id="engC4" class="member">......</span>]<span id="engC4wv" class="wv">？</span></span>
+        <span>5.[<span id="engC5" class="member">......</span>]<span id="engC5wv" class="wv">？</span></span>
+    </div>
+    <div>
+        Eng【<span id="engD" class="member">......</span>】→
+        <span>1.[<span id="engD1" class="member">......</span>]<span id="engD1wv" class="wv">？</span></span>
+        <span>2.[<span id="engD2" class="member">......</span>]<span id="engD2wv" class="wv">？</span></span>
+        <span>3.[<span id="engD3" class="member">......</span>]<span id="engD3wv" class="wv">？</span></span>
+        <span>4.[<span id="engD4" class="member">......</span>]<span id="engD4wv" class="wv">？</span></span>
+        <span>5.[<span id="engD5" class="member">......</span>]<span id="engD5wv" class="wv">？</span></span>
+    </div>
+
+    <div>
+        Doc【<span id="docA" class="member">......</span>】→
+        <span>1.[<span id="docA1" class="member">......</span>]<span id="docA1wv" class="wv">？</span></span>
+        <span>2.[<span id="docA2" class="member">......</span>]<span id="docA2wv" class="wv">？</span></span>
+        <span>3.[<span id="docA3" class="member">......</span>]<span id="docA3wv" class="wv">？</span></span>
+        <span>4.[<span id="docA4" class="member">......</span>]<span id="docA4wv" class="wv">？</span></span>
+        <span>5.[<span id="docA5" class="member">......</span>]<span id="docA5wv" class="wv">？</span></span>
+    </div>
+    <div>
+        Doc【<span id="docB" class="member">......</span>】→
+        <span>1.[<span id="docB1" class="member">......</span>]<span id="docB1wv" class="wv">？</span></span>
+        <span>2.[<span id="docB2" class="member">......</span>]<span id="docB2wv" class="wv">？</span></span>
+        <span>3.[<span id="docB3" class="member">......</span>]<span id="docB3wv" class="wv">？</span></span>
+        <span>4.[<span id="docB4" class="member">......</span>]<span id="docB4wv" class="wv">？</span></span>
+        <span>5.[<span id="docB5" class="member">......</span>]<span id="docB5wv" class="wv">？</span></span>
+    </div>
+    <div>
+        Doc【<span id="docC" class="member">......</span>】→
+        <span>1.[<span id="docC1" class="member">......</span>]<span id="docC1wv" class="wv">？</span></span>
+        <span>2.[<span id="docC1" class="member">......</span>]<span id="docC1wv" class="wv">？</span></span>
+        <span>3.[<span id="docC3" class="member">......</span>]<span id="docC3wv" class="wv">？</span></span>
+        <span>4.[<span id="docC4" class="member">......</span>]<span id="docC4wv" class="wv">？</span></span>
+        <span>5.[<span id="docC5" class="member">......</span>]<span id="docC5wv" class="wv">？</span></span>
+    </div>
+    <div>
+        Doc【<span id="docD" class="member">......</span>】→
+        <span>1.[<span id="docD1" class="member">......</span>]<span id="docD1wv" class="wv">？</span></span>
+        <span>2.[<span id="docD2" class="member">......</span>]<span id="docD2wv" class="wv">？</span></span>
+        <span>3.[<span id="docD3" class="member">......</span>]<span id="docD3wv" class="wv">？</span></span>
+        <span>4.[<span id="docD4" class="member">......</span>]<span id="docD4wv" class="wv">？</span></span>
+        <span>5.[<span id="docD5" class="member">......</span>]<span id="docD5wv" class="wv">？</span></span>
+    </div>
+    <button id="reset">Reset</button>
+
+    <br />
+    <textarea rows="15" cols="30"></textarea>
+    <br />
+    <button id="go">GO</button>
+
+</body>
+</html>

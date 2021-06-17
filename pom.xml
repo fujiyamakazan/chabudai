@@ -46,6 +46,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
+                <!--
                 <executions>
                     <execution>
                         <id>unpackDependencies</id>
@@ -54,7 +55,7 @@
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <!-- 単体テストの時にclassesフォルダが汚染されていると不都合なので別のフォルダへ -->
+                            単体テストの時にclassesフォルダが汚染されていると不都合なので別のフォルダへ
                             <outputDirectory>${project.build.directory}/dependency-unpack</outputDirectory>
                         </configuration>
                     </execution>
@@ -69,6 +70,7 @@
                         </configuration>
                     </execution>
                 </executions>
+                 -->
             </plugin>
             <!-- 【package】MANIFEST.MF作成 -->
             <plugin>
@@ -156,6 +158,32 @@
                     <artifactId>jsr305</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!-- 2021.6.17 Selen Test -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-api</artifactId>
+            <version>3.141.59</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-support</artifactId>
+            <version>3.141.59</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-ie-driver</artifactId>
+            <version>3.141.59</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-edge-driver</artifactId>
+            <version>3.141.59</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-remote-driver</artifactId>
+            <version>3.141.59</version>
         </dependency>
     </dependencies>
     <properties>
