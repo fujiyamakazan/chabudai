@@ -158,8 +158,7 @@ public class TaskPage extends AbstractChabudaiPage {
                     @Override
                     public void onSubmit() {
                         super.onSubmit();
-                        @SuppressWarnings("unused")
-                        SpreadSheet ss = new SpreadSheet(settings);
+                        //SpreadSheet ss = new SpreadSheet(settings);
                     }
 
                 });

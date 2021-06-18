@@ -142,7 +142,7 @@
             <artifactId>kuromoji-ipadic</artifactId>
             <version>0.9.0</version>
         </dependency>
-        <!-- 2021.3.19 Google Drive API -->
+        <!-- 2021.3.19 Google Drive API [Selen Testと競合]
         <dependency>
             <groupId>com.google.api-client</groupId>
             <artifactId>google-api-client</artifactId>
@@ -159,6 +159,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+         -->
         <!-- 2021.6.17 Selen Test -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
