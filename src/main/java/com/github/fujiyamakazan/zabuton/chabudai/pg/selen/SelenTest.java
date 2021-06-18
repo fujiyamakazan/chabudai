@@ -17,7 +17,7 @@ public class SelenTest {
         String driverUrl = "https://msedgedriver.azureedge.net/91.0.864.48/edgedriver_win32.zip";
 
         File f = new File("C:\\tmp\\tmpSelenTest.zip");
-        HttpConnector.download(driverUrl, f, "10.2.0.4", "8080");
+        HttpConnector.download(driverUrl, f, "xx.xx.xx.xx", "8080");
 
 
         ZipUtils.unzip(f, new UnzipTask() {
